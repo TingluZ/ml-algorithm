@@ -24,14 +24,18 @@ class knn_classifier():
         pass
 
     def _get_neighbors(self, x_test):
+        """
+        Return a indice of k nearst neighbors in the trainset
+        """
 
         if self.metric == "euclidean":
             distance = self._euclidean(self.X_train, x_test)
 
-        distance_sort = np.argsort(distance)
-        neighbors = (distance_sort < self.n_neighbors).astype(int)
+        distance_sort_idx = np.argsort(distance)
+        
+        y_train_sorted = self.y_train[distance_sort_idx]
 
-        return neighbors
+        return y_train_sorted[:self.n_neighbors]
 
     def fit(self, X, y):
         """
@@ -45,20 +49,16 @@ class knn_classifier():
         self.X_train = X
         self.y_train = y
 
-    def _pred_one(self, x_test):
-        neighbors = self._get_neighbors(x_test)
-
-        return neighbors
-
     def predict(self, X_test):
         """
         X_test shape (n_test, n_features)
         """
-        prediction = np.array()
+        prediction = np.zeros(len(X_test))
         for i in range(len(X_test)):
-            neighbors = self._pred_one(X_test[i])
-            y = self.y_train * neighbors
-            y_pred = np.argmax(np.unique(y))
+            neighbors = self._get_neighbors(X_test[i])
+            y_unique, y_counts = np.unique(neighbors, return_counts=True) # get the unique labels and the counts
+            y_pred_idx = np.argmax(y_counts) # get the most common label (maximum counts)
+            y_pred = y_unique[y_pred_idx] # the prediction is the label with maximum counts
             prediction[i] = y_pred
 
-        return prediction
+        return prediction.astype(int)
