@@ -23,9 +23,9 @@ class knn_classifier():
     def _manhattan(self):
         pass
 
-    def _get_neighbors(self, x_test):
+    def _get_neighbors_labels(self, x_test):
         """
-        Return a indice of k nearst neighbors in the trainset
+        Return the labels of k nearst neighbors in the trainset
         """
 
         if self.metric == "euclidean":
@@ -55,7 +55,7 @@ class knn_classifier():
         """
         prediction = np.zeros(len(X_test))
         for i in range(len(X_test)):
-            neighbors = self._get_neighbors(X_test[i])
+            neighbors = self._get_neighbors_labels(X_test[i])
             y_unique, y_counts = np.unique(neighbors, return_counts=True) # get the unique labels and the counts
             y_pred_idx = np.argmax(y_counts) # get the most common label (maximum counts)
             y_pred = y_unique[y_pred_idx] # the prediction is the label with maximum counts

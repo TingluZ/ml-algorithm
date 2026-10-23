@@ -1,3 +1,5 @@
+# pytest -v
+
 import numpy as np
 import pytest
 from sklearn import datasets
@@ -29,12 +31,12 @@ def test_euclidean_known_values():
     assert np.allclose(model._euclidean(X1, X2), [0.0, 5.0])
 
 
-def test_get_neighbors_returns_nearest_indices(toy_data):
+def test_get_neighbors_returns_nearest_labels(toy_data):
     X, y = toy_data
     model = knn_classifier(n_neighbors=2)
     model.fit(X, y)
-    idx = model._get_neighbors(np.array([0.2, 0.0]))
-    assert set(idx) == {0, 1}
+    idx = model._get_neighbors_labels(np.array([0.2, 0.0]))
+    assert set(idx) == {0, 0}
 
 
 def test_predict_toy_data(toy_data):
